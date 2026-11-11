@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="On Going">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>On Going</title>
+<style>
+@font-face{font-family:"Barlow";src:url(Barlow-Regular.ttf);font-weight:400}
+@font-face{font-family:"Barlow";src:url(Barlow-Medium.ttf);font-weight:500}
+@font-face{font-family:"Barlow";src:url(Barlow-SemiBold.ttf);font-weight:600}
+@font-face{font-family:"Barlow Condensed";src:url(BarlowCondensed-Medium.ttf);font-weight:500}
+@font-face{font-family:"Barlow Condensed";src:url(BarlowCondensed-SemiBold.ttf);font-weight:600}
+@font-face{font-family:"Barlow Condensed";src:url(BarlowCondensed-Bold.ttf);font-weight:700}
+@font-face{font-family:"Cormorant Garamond";src:url(CormorantGaramond-VF.ttf);font-weight:300 700}
+@font-face{font-family:"EB Garamond";src:url(EBGaramond-VF.ttf);font-weight:400 800}
+@font-face{font-family:"Playfair Display";src:url(PlayfairDisplay-VF.ttf);font-weight:400 900}
+@font-face{font-family:"Jost";src:url(Jost-VF.ttf);font-weight:100 900}
+</style>
+<style>
+:root{
+  --bg:#F1F3F0; --surface:#FFFFFF; --surface-2:#E7EBE7; --ink:#12262B; --muted:#5D6E72;
+  --line:#D6DCD8; --accent:#0F6E73; --accent-ink:#FFFFFF; --lane:#E2AC14; --danger:#B42318;
+  --score-l:42%; --score-s:68%; --title-w:700; --shadow:0 1px 0 rgba(18,38,43,.06);
+  --cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1A1D; --surface:#152427; --surface-2:#1E3236; --ink:#E8EFEC; --muted:#93A5A6;
+    --line:#2A3F43; --accent:#43B9B5; --accent-ink:#06211F; --lane:#F2C64A; --danger:#F97066;
+    --score-l:56%; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1A1D; --surface:#152427; --surface-2:#1E3236; --ink:#E8EFEC; --muted:#93A5A6;
+  --line:#2A3F43; --accent:#43B9B5; --accent-ink:#06211F; --lane:#F2C64A; --danger:#F97066;
+  --score-l:56%; --shadow:none; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:520px;margin:0 auto;padding:12px 18px calc(96px + env(safe-area-inset-bottom,0px))}
+.num{font-family:var(--cond);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em}
+
+/* Cabecera */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 18px}
+.title{font-family:var(--cond);font-weight:var(--title-w);font-size:40px;line-height:1;margin:0;letter-spacing:-.01em}
+.back{background:none;border:0;padding:6px 0;color:var(--accent);font-weight:600;font-size:16px;display:inline-flex;align-items:center;gap:2px}
+.back svg{width:20px;height:20px}
+.round{width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.round svg{width:22px;height:22px}
+
+/* Bloques */
+.block{background:var(--surface);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.block h2{font-family:var(--cond);font-weight:600;font-size:22px;margin:0 0 10px;line-height:1.1}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.row{display:flex;align-items:center;gap:10px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* Lista de ejercicios */
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.list li+li{border-top:1px solid var(--line)}
+.ex{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;width:100%;padding:14px 16px;background:none;border:0;text-align:left}
+.ex b{display:block;font-weight:600;font-size:17px}
+.ex span{font-size:14px;color:var(--muted)}
+.spark{width:84px;height:30px}
+
+/* Marcador */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:18px;overflow:hidden;margin-bottom:14px}
+.board>div{background:var(--surface);padding:14px 16px}
+.board .big{font-family:var(--cond);font-weight:var(--title-w);font-size:52px;line-height:.95;font-variant-numeric:lining-nums tabular-nums}
+.board .big small{font-size:22px;font-weight:600;margin-left:3px;color:var(--muted)}
+.board .lbl{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* Segmentado */
+.seg{display:flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:7px 6px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* Gráficas */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font-family:var(--body);font-size:11px;fill:var(--muted)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+
+/* Botones */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;padding:14px;font-weight:600;font-size:17px;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:none;color:var(--danger);padding:10px}
+.link{background:none;border:0;padding:4px 0;color:var(--accent);font-weight:600;font-size:15px}
+
+/* Historial */
+.hist{list-style:none;margin:0;padding:0}
+.hist li+li{border-top:1px solid var(--line)}
+.hist button{display:grid;grid-template-columns:76px 1fr;gap:10px;width:100%;background:none;border:0;padding:11px 0;text-align:left}
+.hist .d{font-family:var(--cond);font-weight:600;font-size:17px}
+.hist .s{font-size:15px}
+
+/* Calendario */
+.monthnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.monthnav h2{margin:0;text-transform:none}
+.icon{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);display:grid;place-items:center}
+.icon svg{width:18px;height:18px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{text-align:center;font-size:12px;color:var(--muted);padding-bottom:2px}
+.day{aspect-ratio:1/1.08;border:0;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:5px 2px 3px;font-family:var(--cond);font-weight:600;font-size:16px;font-variant-numeric:lining-nums tabular-nums;position:relative}
+.day.out{visibility:hidden}
+.day.today{box-shadow:inset 0 0 0 2px var(--lane)}
+.day.future{opacity:.45}
+.dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-top:auto;padding-bottom:3px;max-width:30px}
+.dots i{width:7px;height:7px;border-radius:50%}
+.day.heat{color:#fff}
+.day.heat.nodata{color:var(--ink)}
+
+/* Recuento */
+.count{display:flex;align-items:baseline;gap:8px;margin:2px 0 14px}
+.count .big{font-family:var(--cond);font-weight:var(--title-w);font-size:72px;line-height:.9}
+.legend{display:grid;gap:8px}
+.legend .r{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center}
+.legend i{width:12px;height:12px;border-radius:4px}
+.bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;grid-column:2/4}
+.bar span{display:block;height:100%;border-radius:4px}
+
+/* Comidas */
+.daynav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.daynav .lbl{flex:1;text-align:center}
+.daynav .lbl b{display:block;font-weight:600;font-size:17px}
+.daynav .lbl span{font-size:14px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.ring{width:104px;height:104px;flex:none}
+.ring text{font-family:var(--cond);font-weight:var(--title-w)}
+.meal{background:var(--surface);border-radius:18px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.meal .head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.meal .name{font-weight:600;font-size:17px}
+.pct{font-family:var(--cond);font-weight:var(--title-w);font-size:28px;line-height:1;font-variant-numeric:lining-nums tabular-nums;min-width:62px;text-align:right}
+.meal.unset .pct,.meal.skip .pct{font-family:var(--body);font-size:14px;font-weight:500;color:var(--muted)}
+.meal .foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.chipbtn{white-space:nowrap;border:1px solid var(--line);background:none;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+.chipbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.meal.skip input[type=range]{opacity:.25}
+.meal.unset input[type=range]{opacity:.45}
+
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:5px;background:linear-gradient(90deg,hsl(0 var(--score-s) var(--score-l)),hsl(45 var(--score-s) var(--score-l)),hsl(125 var(--score-s) var(--score-l)))}
+input[type=range]::-moz-range-track{height:10px;border-radius:5px;background:linear-gradient(90deg,hsl(0 var(--score-s) var(--score-l)),hsl(45 var(--score-s) var(--score-l)),hsl(125 var(--score-s) var(--score-l)))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--ink);margin-top:-9px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
+
+/* Barra de pestañas */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabs button{border:0;background:none;padding:8px 0 9px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.tabs button svg{width:25px;height:25px}
+.tabs button[aria-current="page"]{color:var(--accent)}
+
+
+/* Temas */
+:root[data-skin="pilates"]{
+  --bg:#F5F0EF; --surface:#FFFFFF; --surface-2:#EFE7E6; --ink:#3D393A; --muted:#857D7F; --line:#E8DFDE;
+  --accent:#A9777B; --accent-ink:#FFFFFF; --lane:#D9AEB0; --danger:#A8443F; --blush:#EBD3D2;
+  --score-s:46%; --score-l:60%; --shadow:0 2px 10px rgba(120,90,92,.07);
+  --cond:"Cormorant Garamond","Times New Roman",Times,serif;
+  --body:"EB Garamond","Times New Roman",Times,Georgia,serif;
+  --title-w:500; color-scheme:light;
+}
+:root[data-skin="club"]{
+  --bg:#11151B; --surface:#1A2029; --surface-2:#252D38; --ink:#EEE7DA; --muted:#9C9487; --line:#2E3743;
+  --accent:#C49B5C; --accent-ink:#141820; --lane:#C49B5C; --danger:#E07A6A;
+  --score-s:44%; --score-l:54%; --shadow:none;
+  --cond:"Playfair Display",Georgia,"Times New Roman",serif;
+  --body:"Jost",system-ui,sans-serif;
+  --title-w:600; color-scheme:dark;
+}
+:root[data-skin="pilates"] body{font-size:17px}
+:root[data-skin="pilates"] .title{font-size:46px;letter-spacing:.005em}
+:root[data-skin="pilates"] .btn,:root[data-skin="pilates"] .round{border-radius:999px}
+:root[data-skin="pilates"] .round{width:42px}
+:root[data-skin="pilates"] .board .big,:root[data-skin="pilates"] .count .big{font-weight:500}
+:root[data-skin="club"] .title{font-size:36px;letter-spacing:0}
+:root[data-skin="club"] .board .big{font-size:46px}
+:root[data-skin="club"] .count .big{font-size:62px}
+:root[data-skin="club"] .block,:root[data-skin="club"] .list,:root[data-skin="club"] .meal,:root[data-skin="club"] .w{border:1px solid var(--line)}
+
+/* Inicio y widgets */
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand .ic{width:46px;height:46px;border-radius:11px;flex:none}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.w{position:relative;background:var(--surface);border-radius:24px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;cursor:pointer}
+.w.s{aspect-ratio:1/1}
+.w.m{grid-column:1/-1;min-height:168px}
+.w .wt{font-size:14px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.w .wt b{color:var(--ink);font-family:var(--cond);font-weight:var(--title-w);font-size:20px;line-height:1}
+.w .wbig{font-family:var(--cond);font-weight:var(--title-w);font-size:58px;line-height:.9;margin-top:auto;font-variant-numeric:lining-nums tabular-nums}
+.w .wsub{font-size:13px;color:var(--muted);margin-top:4px}
+.w .ring{width:86px;height:86px;margin:auto}
+.w .chart{margin-top:auto}
+.w .none{margin:auto;color:var(--muted);font-size:14px}
+.w .rm{position:absolute;top:-8px;left:-8px;width:28px;height:28px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);display:grid;place-items:center;z-index:2}
+.w .rm svg{width:14px;height:14px}
+.editing .w{animation:jig .28s ease-in-out infinite alternate}
+.editing .w:nth-child(2n){animation-delay:-.14s}
+@keyframes jig{from{transform:rotate(-.7deg)}to{transform:rotate(.7deg)}}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:auto}
+.week span{text-align:center;font-size:11px;color:var(--muted)}
+.week i{display:block;aspect-ratio:1;border-radius:50%;background:var(--surface-2);margin-top:3px}
+.week i.on{background:var(--accent)}
+.week i.today{box-shadow:0 0 0 2px var(--lane)}
+.gal{list-style:none;margin:0 0 14px;padding:0;background:var(--surface);border-radius:18px;overflow:hidden}
+.gal li+li{border-top:1px solid var(--line)}
+.gal button{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:13px 16px;background:none;border:0;text-align:left}
+.gal b{font-weight:600}
+.gal span{font-size:13px;color:var(--muted)}
+
+/* Ajustes */
+.themes{display:grid;gap:10px}
+.theme{display:grid;grid-template-columns:62px 1fr 26px;gap:14px;align-items:center;width:100%;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:12px;text-align:left}
+.theme[aria-pressed="true"]{border-color:var(--accent)}
+.theme .ic{width:62px;height:62px;border-radius:14px}
+.theme .nm{display:block;font-size:24px;line-height:1.05;margin-bottom:2px}
+.theme .ds{display:block;font-size:14px;color:var(--muted);line-height:1.3}
+.sw{display:flex;gap:5px;margin-top:8px}
+.sw i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.theme[aria-pressed="true"] .ck{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ck svg{width:14px;height:14px}
+.iconrow{display:flex;gap:14px;align-items:center}
+.iconrow .ic{width:88px;height:88px;border-radius:20px;flex:none;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+@media (prefers-reduced-motion:reduce){.editing .w{animation:none}}
+
+
+/* Detalles de deporte */
+.det{background:var(--surface);border-radius:16px;padding:12px 14px;margin-bottom:10px;border-left:4px solid var(--c);box-shadow:var(--shadow)}
+.det .dh{display:flex;align-items:center;gap:8px;font-weight:600;font-size:17px;margin-bottom:10px}
+.det .dh i{width:10px;height:10px;border-radius:50%}
+.det .seg button{font-size:13px;padding:7px 4px}
+.sprow{display:grid;grid-template-columns:12px 1fr 18px;gap:10px;align-items:center;width:100%;background:none;border:0;padding:4px 0;text-align:left}
+.sprow i{width:12px;height:12px;border-radius:50%}
+.mgr li{display:block}
+.lvls{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:13px;color:var(--muted)}
+.lvls span{display:inline-flex;align-items:center;gap:5px}
+.lvls i{width:10px;height:10px;border-radius:50%}
+.cols{display:flex;flex-wrap:wrap;gap:10px}
+.swb{width:34px;height:34px;border-radius:50%;border:3px solid var(--bg);box-shadow:0 0 0 2px transparent}
+.swb[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.krow{display:grid;grid-template-columns:1fr auto 36px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.row .btn{flex:1}
+
+/* Hoja inferior */
+.backdrop{position:fixed;inset:0;background:rgba(5,15,18,.45);z-index:40;opacity:0;transition:opacity .2s}
+.backdrop.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:520px;margin:0 auto;background:var(--bg);border-radius:22px 22px 0 0;max-height:90vh;overflow:auto;padding:8px 18px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+.sheet h3{font-family:var(--cond);font-weight:var(--title-w);font-size:28px;margin:4px 0 14px;line-height:1.05}
+.field{display:block;margin-bottom:14px}
+.field>span{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.inp{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;font-size:17px}
+.sets{display:grid;gap:8px;margin-bottom:10px}
+.set{display:grid;grid-template-columns:62px 1fr 1fr 36px;gap:8px;align-items:center}
+.set.single{grid-template-columns:1fr 1fr}
+.set .n{font-family:var(--cond);font-weight:600;font-size:17px;color:var(--muted)}
+.unit{position:relative}
+.unit .inp{padding-right:44px;font-family:var(--cond);font-weight:600;font-size:22px;font-variant-numeric:lining-nums tabular-nums}
+.unit em{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;font-size:14px;color:var(--muted)}
+.x{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);display:grid;place-items:center}
+.x svg{width:16px;height:16px}
+.err{color:var(--danger);font-size:14px;min-height:20px;margin:4px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:600;font-size:16px}
+.chip i{width:12px;height:12px;border-radius:50%}
+.chip[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,var(--surface))}
+.addrow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:16px}
+.addrow .btn{width:auto;padding:12px 16px;font-size:16px}
+.empty{text-align:center;padding:28px 18px;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-family:var(--cond);font-size:24px;font-weight:600;margin-bottom:4px}
+.sync{text-align:center;font-size:13px;color:var(--muted);margin:22px 0 0}
+.mgr{list-style:none;margin:0;padding:0}
+.mgr li{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:8px 0}
+.mgr li+li{border-top:1px solid var(--line)}
+.mgr i{width:12px;height:12px;border-radius:50%}
+@media (prefers-reduced-motion:reduce){.sheet,.backdrop{transition:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<nav class="tabs" aria-label="Secciones"><div class="in">
+  <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2.2"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="2.2"/><rect x="3.5" y="13" width="17" height="7.5" rx="2.2"/></svg>Inicio</button>
+  <button data-tab="ej"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg>Ejercicios</button>
+  <button data-tab="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg>Actividad</button>
+  <button data-tab="food"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.5 1.5-3.5 4-3.5 8h3.5"/></svg>Comidas</button>
+  <button data-tab="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>Ajustes</button>
+</div></nav>
+<div id="layer"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- utilidades ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const keyOf = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const parseKey = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const todayKey = () => keyOf(new Date());
+const newId = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => (Math.round(n * 10) / 10).toLocaleString("es-ES");
+const parseNum = v => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : NaN; };
+const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MSHORT = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const dayShort = k => { const d = parseKey(k); return d.getDate() + " " + MSHORT[d.getMonth()]; };
+const dayLong = k => parseKey(k).toLocaleDateString("es-ES", {weekday:"long", day:"numeric", month:"long"});
+const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+const scoreColor = s => "hsl(" + Math.round(s * 1.25) + " var(--score-s) var(--score-l))";
+const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+const monthKey = (y, m) => y + "-" + pad(m + 1);
+const relDay = k => {
+  const diff = Math.round((parseKey(todayKey()) - parseKey(k)) / 864e5);
+  if (diff === 0) return "hoy"; if (diff === 1) return "ayer";
+  if (diff > 1 && diff < 7) return "hace " + diff + " días";
+  return dayShort(k);
+};
+const ICON = {
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  left:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+};
+const PALETTE = ["#0F8A8A","#3B6FD8","#D9822B","#8B5CF6","#D6457A","#5A9E3A","#B8860B","#E0533D"];
+const LEVELS = ["Leve","Moderado","Intenso","Máximo"];
+const PWA = true;
+const PADEL_KINDS = () => [{id:"partido", name:"Partido", match:true}, {id:"clase", name:"Clase"}, {id:"entreno", name:"Entreno"}];
+const MEALS = [["desayuno","Desayuno"],["mediamanana","Media mañana"],["comida","Comida"],["merienda","Merienda"],["cena","Cena"]];
+
+/* ---------- estado ---------- */
+const LS_KEY = "ongoing-app-v1";
+function blank(){
+  return {
+    exercises: [], entries: {},
+    sportTypes: [
+      {id:"gym", name:"Gym", color:PALETTE[0], kinds:[]},
+      {id:"padel", name:"Pádel", color:PALETTE[1], kinds:PADEL_KINDS()},
+      {id:"barra", name:"Barre", color:PALETTE[2], kinds:[]}
+    ],
+    activity: {}, meals: {}, log: {},
+    widgets: ["food-today", "act-month", "act-year", "food-month"],
+    prefs: {skin: "ongoing", appearance: "auto"}
+  };
+}
+let S = blank();
+try { const raw = localStorage.getItem(LS_KEY) || localStorage.getItem("marca-app-v1"); if (raw) S = Object.assign(blank(), JSON.parse(raw)); } catch (e) {}
+function fixup(){
+  S.log = S.log || {};
+  S.sportTypes.forEach(t => { if (!Array.isArray(t.kinds)) t.kinds = t.id === "padel" ? PADEL_KINDS() : []; });
+  const b = S.sportTypes.find(t => t.id === "barra" && t.name === "Barra"); if (b) b.name = "Barre";
+}
+fixup();
+
+const now = new Date();
+const ui = {
+  tab: "home", exId: null, sportId: null, metric: "max", editW: false,
+  calY: now.getFullYear(), calM: now.getMonth(),
+  foodDay: todayKey(), foodY: now.getFullYear(), foodM: now.getMonth()
+};
+
+/* ---------- guardado (cuenta + respaldo local) ---------- */
+let col = null, cloud = "local";
+const dirty = new Set(), toDelete = new Set();
+let saveTimer = null, saving = false;
+function docBody(k){
+  if (k === "meta") return {exercises:S.exercises, sportTypes:S.sportTypes, activity:S.activity, widgets:S.widgets, prefs:S.prefs};
+  if (k === "comidas") return {meals:S.meals};
+  if (k === "registro") return {log:S.log};
+  if (k.startsWith("ej_")) return {entries: S.entries[k.slice(3)] || []};
+  return {};
+}
+function touch(...keys){
+  keys.forEach(k => { dirty.add(k); toDelete.delete(k); });
+  try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700);
+}
+function dropDoc(k){
+  dirty.delete(k); toDelete.add(k);
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700);
+}
+async function flush(){
+  if (!col) { dirty.clear(); toDelete.clear(); return; }
+  if (saving) { saveTimer = setTimeout(flush, 500); return; }
+  saving = true;
+  try {
+    for (const k of [...dirty]) { dirty.delete(k); await col.doc(k).set(JSON.parse(JSON.stringify(docBody(k)))); }
+    for (const k of [...toDelete]) { toDelete.delete(k); await col.doc(k).delete(); }
+  } catch (e) {
+    if (e && e.code === "quota_exceeded") alert("No queda espacio para guardar más datos en la cuenta. Los cambios siguen en este navegador.");
+  } finally { saving = false; }
+}
+async function initCloud(){
+  const c = window.claude;
+  if (!c || typeof c.use !== "function") return;
+  try {
+    const [db, user] = await Promise.all([c.use("db"), c.use("user")]);
+    if (!db || !user) return;
+    const uid = await user.id();
+    if (!uid) return;
+    col = db.collection("data/users/" + uid);
+    const snap = await Promise.race([col.get(), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 10000))]);
+    if (snap.empty) {
+      // Primera vez en la cuenta: sube lo que hubiera en este navegador
+      const keys = ["meta","comidas","registro", ...S.exercises.map(e => "ej_" + e.id)];
+      cloud = "cuenta"; touch(...keys);
+    } else {
+      const next = blank(); next.entries = {};
+      snap.docs.forEach(d => {
+        const b = d.data() || {};
+        if (d.id === "meta") { next.exercises = b.exercises || []; next.sportTypes = b.sportTypes || next.sportTypes; next.activity = b.activity || {}; if (b.widgets) next.widgets = b.widgets; if (b.prefs) next.prefs = b.prefs; }
+        else if (d.id === "comidas") next.meals = b.meals || {};
+        else if (d.id === "registro") next.log = b.log || {};
+        else if (d.id.startsWith("ej_")) next.entries[d.id.slice(3)] = b.entries || [];
+      });
+      S = JSON.parse(JSON.stringify(next)); fixup();
+      cloud = "cuenta";
+      try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+    }
+    render();
+  } catch (e) { col = null; cloud = "local"; }
+}
+const syncNote = () => '<p class="sync">' + (cloud === "cuenta"
+  ? "Guardado en tu cuenta: lo verás igual en el móvil y en el ordenador."
+  : PWA ? "Guardado en este móvil. Haz una copia de seguridad de vez en cuando desde Ajustes." : "Guardado en este navegador.") + "</p>";
+
+/* ---------- métricas ---------- */
+const mMax = e => Math.max(...e.sets.map(s => s.kg));
+const m1RM = e => Math.max(...e.sets.map(s => s.kg * (1 + s.reps / 30)));
+const mVol = e => e.sets.reduce((a, s) => a + s.kg * s.reps, 0);
+const METRICS = {max:{label:"Peso máx.", f:mMax, unit:"kg"}, orm:{label:"1RM est.", f:m1RM, unit:"kg"}, vol:{label:"Volumen", f:mVol, unit:"kg"}};
+const entriesOf = id => (S.entries[id] || []).slice().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+const setsText = sets => {
+  if (sets.length === 1) return fmt(sets[0].kg) + " kg × " + sets[0].reps;
+  const same = sets.every(s => s.kg === sets[0].kg && s.reps === sets[0].reps);
+  if (same) return sets.length + " × " + sets[0].reps + " con " + fmt(sets[0].kg) + " kg";
+  return sets.map(s => fmt(s.kg) + "×" + s.reps).join(", ");
+};
+function dayAvg(k){
+  const d = S.meals[k]; if (!d) return null;
+  const v = MEALS.map(([id]) => d[id]).filter(m => m && typeof m.s === "number").map(m => m.s);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+}
+
+/* ---------- gráficas SVG ---------- */
+function niceRange(min, max){
+  if (min === max) { const p = Math.max(1, Math.abs(min) * 0.1); min -= p; max += p; }
+  const span = max - min, step0 = span / 4, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0);
+  return {lo: Math.floor(min / step) * step, hi: Math.ceil(max / step) * step, step};
+}
+function lineChart(pts, o){
+  const W = 340, H = o.h || 190, L = o.mini ? 6 : 38, R = o.mini ? 8 : 12, T = o.mini ? 8 : 12, B = o.mini ? 8 : 24;
+  if (!pts.length) return "";
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const xMin = o.xMin ?? Math.min(...xs), xMax = o.xMax ?? Math.max(...xs);
+  const r = o.yFixed ? {lo:o.yFixed[0], hi:o.yFixed[1], step:o.yFixed[2]} : niceRange(Math.min(...ys), Math.max(...ys));
+  const X = x => xMax === xMin ? L + (W - L - R) / 2 : L + (x - xMin) / (xMax - xMin) * (W - L - R);
+  const Y = y => T + (1 - (y - r.lo) / (r.hi - r.lo)) * (H - T - B);
+  let g = "";
+  for (let v = r.lo; v <= r.hi + 1e-9; v += r.step) g += '<line class="gl" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/>' + (o.mini ? "" : '<text x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + (o.fmtY ? o.fmtY(v) : fmt(v)) + "</text>");
+  (o.xTicks || []).forEach(t => { g += '<text x="' + X(t.x) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(t.label) + "</text>"; });
+  const path = pts.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.y).toFixed(1)).join(" ");
+  const area = pts.length > 1 ? path + " L" + X(pts[pts.length - 1].x).toFixed(1) + " " + Y(r.lo) + " L" + X(pts[0].x).toFixed(1) + " " + Y(r.lo) + " Z" : "";
+  const stroke = o.color || "var(--accent)";
+  let dots = pts.map(p => '<circle cx="' + X(p.x).toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="' + (pts.length > 30 ? 2.5 : 4) + '" fill="' + (o.dotColor ? o.dotColor(p.y, p) : stroke) + '" stroke="var(--surface)" stroke-width="1.5"/>').join("");
+  return '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(o.label || "Gráfica") + '">' + g +
+    (area ? '<path d="' + area + '" fill="' + stroke + '" opacity=".08"/>' : "") +
+    '<path d="' + path + '" fill="none" stroke="' + stroke + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' + dots + "</svg>";
+}
+function barChart(items, o){
+  const W = 340, H = o.h || 160, T = 18, B = 24, n = items.length, gap = 6;
+  const bw = (W - gap * (n - 1)) / n, max = Math.max(o.max || 0, ...items.map(i => i.v), 1);
+  let s = "";
+  items.forEach((it, i) => {
+    const h = (it.v / max) * (H - T - B), x = i * (bw + gap), y = H - B - h;
+    s += '<rect x="' + x.toFixed(1) + '" y="' + (H - B - Math.max(h, 0)).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(h, 0).toFixed(1) + '" rx="4" fill="' + (it.color || (it.hl ? "var(--accent)" : "var(--surface-2)")) + '"/>';
+    s += '<rect x="' + x.toFixed(1) + '" y="' + (H - B - 3) + '" width="' + bw.toFixed(1) + '" height="3" rx="1.5" fill="var(--line)" opacity="' + (it.v ? 0 : 1) + '"/>';
+    if (it.v) s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '" text-anchor="middle" style="font-family:var(--cond);font-weight:600;font-size:13px;fill:var(--ink)">' + esc(o.fmt ? o.fmt(it.v) : it.v) + "</text>";
+    s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle"' + (it.hl ? ' style="fill:var(--ink);font-weight:600"' : "") + ">" + esc(it.label) + "</text>";
+  });
+  return '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(o.label || "Gráfica de barras") + '">' + s + "</svg>";
+}
+function spark(vals){
+  if (vals.length < 2) return "";
+  const W = 84, H = 30, mn = Math.min(...vals), mx = Math.max(...vals), sp = mx - mn || 1;
+  const p = vals.map((v, i) => (i ? "L" : "M") + (i / (vals.length - 1) * (W - 4) + 2).toFixed(1) + " " + (H - 3 - (v - mn) / sp * (H - 6)).toFixed(1)).join(" ");
+  return '<svg class="spark" viewBox="0 0 ' + W + " " + H + '" aria-hidden="true"><path d="' + p + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function ring(v){
+  const r = 44, c = 2 * Math.PI * r, has = v !== null;
+  return '<svg class="ring" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="' + r + '" fill="none" stroke="var(--surface-2)" stroke-width="10"/>' +
+    (has ? '<circle cx="52" cy="52" r="' + r + '" fill="none" stroke="' + scoreColor(v) + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (c * v / 100).toFixed(1) + " " + c.toFixed(1) + '" transform="rotate(-90 52 52)"/>' : "") +
+    '<text x="52" y="' + (has ? 61 : 60) + '" text-anchor="middle" style="font-size:' + (has ? 30 : 22) + 'px;fill:' + (has ? scoreColor(v) : "var(--muted)") + '">' + (has ? Math.round(v) + "%" : "—") + "</text></svg>";
+}
+
+/* ---------- vistas ---------- */
+function viewExercises(){
+  let h = '<header class="top"><h1 class="title">Ejercicios</h1><button class="round" data-act="new-ex" aria-label="Añadir ejercicio">' + ICON.plus + "</button></header>";
+  if (!S.exercises.length) {
+    h += '<div class="block empty"><b>Sin ejercicios todavía</b>Añade uno, por ejemplo «Press banca», y registra cada sesión con sus kilos y repeticiones.<br><br><button class="btn" data-act="new-ex">Añadir ejercicio</button></div>';
+  } else {
+    const sorted = S.exercises.slice().sort((a, b) => {
+      const la = entriesOf(a.id).slice(-1)[0], lb = entriesOf(b.id).slice(-1)[0];
+      return (lb ? lb.date : "") > (la ? la.date : "") ? 1 : -1;
+    });
+    h += '<ul class="list">' + sorted.map(ex => {
+      const es = entriesOf(ex.id), last = es[es.length - 1];
+      const sub = last ? relDay(last.date) + ", " + setsText(last.sets) : "Sin sesiones";
+      return '<li><button class="ex" data-act="open-ex" data-id="' + ex.id + '"><div><b>' + esc(ex.name) + "</b><span>" + esc(sub) + "</span></div>" + spark(es.slice(-10).map(mMax)) + "</button></li>";
+    }).join("") + "</ul>";
+  }
+  return h + syncNote();
+}
+
+function viewExercise(){
+  const ex = S.exercises.find(e => e.id === ui.exId);
+  if (!ex) { ui.exId = null; return viewExercises(); }
+  const es = entriesOf(ex.id), m = METRICS[ui.metric];
+  let h = '<button class="back" data-act="back">' + ICON.left + "Ejercicios</button>";
+  h += '<header class="top"><h1 class="title">' + esc(ex.name) + '</h1><button class="round" data-act="new-entry" aria-label="Registrar sesión">' + ICON.plus + "</button></header>";
+  if (!es.length) {
+    h += '<div class="block empty"><b>Primera sesión</b>Registra el día, los kilos y las repeticiones. Con dos sesiones ya verás la evolución.<br><br><button class="btn" data-act="new-entry">Registrar sesión</button></div>';
+  } else {
+    const best = Math.max(...es.map(mMax)), last = es[es.length - 1];
+    const prev = es.length > 1 ? mMax(es[es.length - 2]) : null;
+    const delta = prev !== null ? mMax(last) - prev : null;
+    h += '<div class="board"><div><div class="big">' + fmt(best) + '<small>kg</small></div><div class="lbl">Mejor peso</div></div>' +
+      '<div><div class="big">' + es.length + '<small>' + (es.length === 1 ? "sesión" : "sesiones") + '</small></div><div class="lbl">Última ' + relDay(last.date) +
+      (delta !== null && delta !== 0 ? ", " + (delta > 0 ? "+" : "") + fmt(delta) + " kg" : "") + "</div></div></div>";
+    h += '<section class="block"><div class="seg" role="group" aria-label="Métrica">' + Object.entries(METRICS).map(([k, v]) =>
+      '<button data-act="metric" data-k="' + k + '" aria-pressed="' + (ui.metric === k) + '">' + v.label + "</button>").join("") + "</div>";
+    const pts = es.map(e => ({x: parseKey(e.date).getTime(), y: m.f(e)}));
+    const ticks = [];
+    if (pts.length > 1) { const a = pts[0].x, b = pts[pts.length - 1].x; [a, (a + b) / 2, b].forEach(x => { const d = new Date(x); ticks.push({x, label: d.getDate() + " " + MSHORT[d.getMonth()]}); }); }
+    else ticks.push({x: pts[0].x, label: dayShort(es[0].date)});
+    h += lineChart(pts, {xTicks: ticks, label: m.label + " de " + ex.name});
+    h += '<p class="small muted" style="margin:8px 0 0">' + (ui.metric === "orm" ? "Estimación de Epley sobre tu mejor serie de cada sesión." : ui.metric === "vol" ? "Suma de kilos por repeticiones de todas las series." : "Kilos de la serie más pesada de cada sesión.") + "</p></section>";
+    h += '<section class="block"><h2>Historial</h2><ul class="hist">' + es.slice().reverse().map(e =>
+      '<li><button data-act="edit-entry" data-id="' + e.id + '"><span class="d">' + dayShort(e.date) + '</span><span class="s">' + esc(setsText(e.sets)) + "</span></button></li>").join("") + "</ul></section>";
+  }
+  h += '<div class="row" style="justify-content:space-between"><button class="link" data-act="rename-ex">Cambiar nombre</button><button class="link" style="color:var(--danger)" data-act="del-ex">Eliminar ejercicio</button></div>';
+  return h + syncNote();
+}
+
+function calendarGrid(y, m, cellFn){
+  const first = new Date(y, m, 1), offset = (first.getDay() + 6) % 7, n = daysInMonth(y, m);
+  let h = '<div class="cal">' + ["L","M","X","J","V","S","D"].map(d => '<div class="wd">' + d + "</div>").join("");
+  for (let i = 0; i < offset; i++) h += '<div class="day out"></div>';
+  for (let d = 1; d <= n; d++) h += cellFn(keyOf(new Date(y, m, d)), d);
+  return h + "</div>";
+}
+
+function viewActivity(){
+  const y = ui.calY, m = ui.calM, n = daysInMonth(y, m), tk = todayKey();
+  const mk = monthKey(y, m);
+  const daysDone = Object.keys(S.activity).filter(k => k.startsWith(mk) && S.activity[k].length).length;
+  const elapsed = (y === now.getFullYear() && m === now.getMonth()) ? now.getDate() : n;
+  let h = '<header class="top"><h1 class="title">Actividad</h1></header>';
+  h += '<section class="block"><div class="monthnav"><button class="icon" data-act="cal-prev" aria-label="Mes anterior">' + ICON.left + "</button><h2>" + MONTHS[m][0].toUpperCase() + MONTHS[m].slice(1) + " " + y + '</h2><button class="icon" data-act="cal-next" aria-label="Mes siguiente">' + ICON.right + "</button></div>";
+  h += '<div class="count"><span class="big">' + daysDone + '</span><span class="muted">' + (daysDone === 1 ? "día" : "días") + " con deporte de " + elapsed + "</span></div>";
+  h += calendarGrid(y, m, (k, d) => {
+    const ids = S.activity[k] || [];
+    const dots = ids.map(id => S.sportTypes.find(t => t.id === id)).filter(Boolean).map(t => '<i style="background:' + t.color + '"></i>').join("");
+    const lbl = d + " de " + MONTHS[m] + (ids.length ? ": " + ids.map(id => (S.sportTypes.find(t => t.id === id) || {}).name).filter(Boolean).join(", ") : "");
+    return '<button class="day' + (k === tk ? " today" : "") + (k > tk ? " future" : "") + '" data-act="day" data-k="' + k + '" aria-label="' + esc(lbl) + '">' + d + '<span class="dots">' + dots + "</span></button>";
+  });
+  h += '<p class="small muted" style="margin:10px 0 0">Toca un día para marcar qué deporte hiciste.</p></section>';
+
+  // Desglose del mes
+  const counts = S.sportTypes.map(t => ({t, c: Object.keys(S.activity).filter(k => k.startsWith(mk) && S.activity[k].includes(t.id)).length})).filter(x => x.c);
+  if (counts.length) {
+    const mx = Math.max(...counts.map(x => x.c));
+    h += '<section class="block"><h2>Este mes por deporte</h2><div class="legend">' + counts.sort((a, b) => b.c - a.c).map(x =>
+      '<div class="r"><i style="background:' + x.t.color + '"></i><span>' + esc(x.t.name) + '</span><b class="num" style="font-size:18px">' + x.c + '</b><span></span><div class="bar"><span style="width:' + (x.c / mx * 100) + "%;background:" + x.t.color + '"></span></div></div>').join("") + "</div></section>";
+  }
+
+  // Últimos 12 meses
+  const items = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(y, m - i, 1), k = monthKey(d.getFullYear(), d.getMonth());
+    items.push({label: MSHORT[d.getMonth()][0].toUpperCase() + MSHORT[d.getMonth()].slice(1, 3), v: Object.keys(S.activity).filter(x => x.startsWith(k) && S.activity[x].length).length, hl: i === 0});
+  }
+  h += '<section class="block"><h2>Días por mes</h2>' + barChart(items, {label: "Días de deporte en los últimos 12 meses"}) + "</section>";
+
+  // Gestionar deportes
+  h += '<section class="block"><div class="spread"><h2 style="margin:0">Deportes</h2><button class="link" data-act="new-sport">Añadir deporte</button></div><ul class="mgr" style="margin-top:8px">' +
+    S.sportTypes.map(t => {
+      const total = Object.values(S.activity).filter(a => a.includes(t.id)).length;
+      return '<li><button class="sprow" data-act="open-sport" data-id="' + t.id + '"><i style="background:' + t.color + '"></i><span>' + esc(t.name) + ' <span class="muted small">' + total + (total === 1 ? " día" : " días") + '</span></span><span class="muted" style="width:18px;height:18px;display:inline-block">' + ICON.right + "</span></button></li>";
+    }).join("") + "</ul></section>";
+  return h + syncNote();
+}
+
+function viewFood(){
+  const k = ui.foodDay, tk = todayKey(), avg = dayAvg(k), d = S.meals[k] || {};
+  const scored = MEALS.filter(([id]) => d[id] && typeof d[id].s === "number").length;
+  const skipped = MEALS.filter(([id]) => d[id] && d[id].skip).length;
+  let h = '<header class="top"><h1 class="title">Comidas</h1></header>';
+  h += '<div class="daynav"><button class="icon" data-act="food-prev" aria-label="Día anterior">' + ICON.left + '</button><div class="lbl"><b>' + (k === tk ? "Hoy" : cap(dayLong(k))) + "</b><span>" + (k === tk ? dayLong(k) : '<button class="link" data-act="food-today" style="padding:0;font-size:14px">Volver a hoy</button>') + '</span></div><button class="icon" data-act="food-next" aria-label="Día siguiente"' + (k >= tk ? " disabled style=\"opacity:.35\"" : "") + ">" + ICON.right + "</button></div>";
+  h += '<div class="block score">' + ring(avg) + '<div><b style="font-size:17px">' + (avg === null ? "Sin comidas valoradas" : "Media del día") + '</b><div class="small muted">' +
+    (avg === null ? "Mueve la barra de cada comida para valorarla." : scored + (scored === 1 ? " comida cuenta" : " comidas cuentan") + (skipped ? ", " + skipped + " sin hacer no " + (skipped === 1 ? "cuenta" : "cuentan") : "")) + "</div></div></div>";
+  h += MEALS.map(([id, name]) => {
+    const st = d[id], isSkip = st && st.skip, isSet = st && typeof st.s === "number";
+    const val = isSet ? st.s : 50;
+    return '<div class="meal ' + (isSkip ? "skip" : isSet ? "" : "unset") + '" data-meal="' + id + '"><div class="head"><span class="name">' + name + '</span><span class="pct"' + (isSet ? ' style="color:' + scoreColor(val) + '"' : "") + ">" + (isSkip ? "No la hice" : isSet ? val + "%" : "Sin valorar") + "</span></div>" +
+      '<input type="range" min="0" max="100" step="5" value="' + val + '" data-act="meal-range" data-meal="' + id + '" aria-label="Saludable en ' + name + '"' + (isSkip ? " disabled" : "") + ">" +
+      '<div class="foot"><span class="small muted">' + (isSkip ? "No cuenta en la media." : "0 nada, 100 muy saludable") + '</span><span class="row">' +
+      (isSet ? '<button class="link small" data-act="meal-clear" data-meal="' + id + '">Quitar</button>' : "") +
+      '<button class="chipbtn" data-act="meal-skip" data-meal="' + id + '" aria-pressed="' + !!isSkip + '">No la hice</button></span></div></div>';
+  }).join("");
+
+  // Mes
+  const y = ui.foodY, m = ui.foodM, mk = monthKey(y, m), n = daysInMonth(y, m);
+  const avgs = []; for (let i = 1; i <= n; i++) { const kk = keyOf(new Date(y, m, i)); const a = dayAvg(kk); if (a !== null) avgs.push({x: i, y: a}); }
+  const monthAvg = avgs.length ? avgs.reduce((a, b) => a + b.y, 0) / avgs.length : null;
+  h += '<section class="block" style="margin-top:18px"><div class="monthnav"><button class="icon" data-act="fm-prev" aria-label="Mes anterior">' + ICON.left + "</button><h2>" + MONTHS[m][0].toUpperCase() + MONTHS[m].slice(1) + " " + y + '</h2><button class="icon" data-act="fm-next" aria-label="Mes siguiente">' + ICON.right + "</button></div>";
+  h += '<div class="count"><span class="big"' + (monthAvg !== null ? ' style="color:' + scoreColor(monthAvg) + '"' : "") + ">" + (monthAvg !== null ? Math.round(monthAvg) + "%" : "—") + '</span><span class="muted">' + (monthAvg !== null ? "de media en " + avgs.length + (avgs.length === 1 ? " día" : " días") : "sin días valorados") + "</span></div>";
+  h += calendarGrid(y, m, (kk, dd) => {
+    const a = dayAvg(kk);
+    return '<button class="day heat' + (a === null ? " nodata" : "") + (kk === tk ? " today" : "") + (kk > tk ? " future" : "") + '" data-act="food-day" data-k="' + kk + '"' + (a !== null ? ' style="background:' + scoreColor(a) + '"' : "") + ' aria-label="' + dd + " de " + MONTHS[m] + (a !== null ? ", " + Math.round(a) + "%" : ", sin datos") + '">' + dd + "</button>";
+  });
+  if (avgs.length) {
+    h += '<h2 style="margin-top:18px">Evolución diaria</h2>' + lineChart(avgs, {xMin: 1, xMax: n, yFixed: [0, 100, 25], fmtY: v => v + "%", color: "var(--muted)", dotColor: scoreColor,
+      xTicks: [1, 8, 15, 22, n].map(x => ({x, label: String(x)})), label: "Media diaria del mes"});
+    const per = MEALS.map(([id, name]) => {
+      const v = Object.keys(S.meals).filter(kk => kk.startsWith(mk)).map(kk => S.meals[kk][id]).filter(x => x && typeof x.s === "number").map(x => x.s);
+      return {label: name === "Media mañana" ? "M. mañana" : name, v: v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : 0, n: v.length};
+    });
+    h += '<h2 style="margin-top:18px">Media por comida</h2>' + barChart(per.map(p => ({label: p.label, v: p.v, color: p.n ? scoreColor(p.v) : null})), {max: 100, fmt: v => v + "%", label: "Media del mes por comida"});
+  }
+  h += "</section>";
+  return h + syncNote();
+}
+
+
+
+/* ---------- deportes: detalle y evolución ---------- */
+const lvlColor = (c, l) => "color-mix(in srgb, " + c + " " + [30, 55, 80, 100][l - 1] + "%, var(--surface))";
+function sessionsOf(id){
+  return Object.keys(S.activity).filter(k => S.activity[k].includes(id)).sort().map(k => ({k, L: (S.log[k] && S.log[k][id]) || {}}));
+}
+function sessText(t, L){
+  const parts = [], kind = (t.kinds || []).find(x => x.id === L.kind);
+  if (kind) parts.push(kind.name);
+  if (kind && kind.match && L.res) parts.push((L.res === "w" ? "ganado" : "perdido") + (L.score ? " " + L.score : ""));
+  if (L.min) parts.push(L.min + " min");
+  if (L.lvl) parts.push(LEVELS[L.lvl - 1].toLowerCase());
+  return parts.length ? cap(parts.join(", ")) : "Sin detalles";
+}
+function dateTicks(pts){
+  if (pts.length < 2) return [{x: pts[0].x, label: dayShort(keyOf(new Date(pts[0].x)))}];
+  const a = pts[0].x, b = pts[pts.length - 1].x;
+  return [a, (a + b) / 2, b].map(x => { const d = new Date(x); return {x, label: d.getDate() + " " + MSHORT[d.getMonth()]}; });
+}
+function viewSport(){
+  const t = S.sportTypes.find(x => x.id === ui.sportId);
+  if (!t) { ui.sportId = null; return viewActivity(); }
+  const ss = sessionsOf(t.id), y = now.getFullYear(), m = now.getMonth(), mk = monthKey(y, m);
+  let h = '<button class="back" data-act="back-act">' + ICON.left + "Actividad</button>";
+  h += '<header class="top"><h1 class="title">' + esc(t.name) + '</h1><button class="link" data-act="edit-sport">Editar</button></header>';
+  if (!ss.length) return h + '<div class="block empty"><b>Sin sesiones</b>Marca un día en el calendario de Actividad y apunta minutos, intensidad' + (t.kinds.length ? " y tipo de sesión" : "") + ".</div>" + syncNote();
+  const withMin = ss.filter(s => s.L.min), mins = withMin.reduce((a, s) => a + s.L.min, 0), thisM = ss.filter(s => s.k.startsWith(mk)).length;
+  h += '<div class="board"><div><div class="big">' + ss.length + "<small>" + (ss.length === 1 ? "sesión" : "sesiones") + '</small></div><div class="lbl">' + thisM + " este mes</div></div>" +
+    '<div><div class="big">' + (mins ? fmt(mins / 60) + "<small>h</small>" : "—") + '</div><div class="lbl">' + (mins ? Math.round(mins / withMin.length) + " min de media" : "Apunta los minutos") + "</div></div></div>";
+
+  // Partidos
+  const matchIds = t.kinds.filter(x => x.match).map(x => x.id);
+  const matches = ss.filter(s => matchIds.includes(s.L.kind) && s.L.res);
+  if (matches.length) {
+    const w = matches.filter(s => s.L.res === "w").length, pct = Math.round(w / matches.length * 100), items = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(y, m - i, 1), k = monthKey(d.getFullYear(), d.getMonth()), mm = matches.filter(s => s.k.startsWith(k));
+      items.push({label: MSHORT[d.getMonth()], v: mm.length ? Math.round(mm.filter(s => s.L.res === "w").length / mm.length * 100) : 0, hl: i === 0, color: mm.length ? t.color : null});
+    }
+    const win = "hsl(125 var(--score-s) var(--score-l))", lose = "hsl(0 var(--score-s) var(--score-l))";
+    h += '<section class="block"><h2>Partidos</h2><div class="count"><span class="big">' + pct + '%</span><span class="muted">de victorias: ' + w + (w === 1 ? " ganado" : " ganados") + " y " + (matches.length - w) + (matches.length - w === 1 ? " perdido" : " perdidos") + "</span></div>" +
+      '<p class="small muted" style="margin:0 0 6px">Victorias por mes</p>' + barChart(items, {max: 100, h: 130, fmt: v => v + "%", label: "Porcentaje de victorias por mes"}) +
+      '<ul class="hist" style="margin-top:10px">' + matches.slice(-5).reverse().map(s => '<li><button data-act="day" data-k="' + s.k + '"><span class="d">' + dayShort(s.k) + '</span><span class="s"><b style="color:' + (s.L.res === "w" ? win : lose) + '">' + (s.L.res === "w" ? "Ganado" : "Perdido") + "</b>" + (s.L.score ? " " + esc(s.L.score) : "") + "</span></button></li>").join("") + "</ul></section>";
+  }
+
+  // Minutos por sesión, coloreados por intensidad
+  if (withMin.length) {
+    const pts = withMin.map(s => ({x: parseKey(s.k).getTime(), y: s.L.min, l: s.L.lvl}));
+    h += '<section class="block"><h2>Minutos por sesión</h2>' + lineChart(pts, {color: t.color, dotColor: (v, p) => p.l ? lvlColor(t.color, p.l) : "var(--surface-2)", xTicks: dateTicks(pts), label: "Minutos por sesión de " + t.name}) +
+      '<div class="lvls">' + LEVELS.map((n, i) => '<span><i style="background:' + lvlColor(t.color, i + 1) + '"></i>' + n + "</span>").join("") + "</div></section>";
+  }
+
+  // Sesiones por mes
+  const items = [];
+  for (let i = 11; i >= 0; i--) { const d = new Date(y, m - i, 1), k = monthKey(d.getFullYear(), d.getMonth());
+    items.push({label: MSHORT[d.getMonth()][0].toUpperCase() + MSHORT[d.getMonth()].slice(1, 3), v: ss.filter(s => s.k.startsWith(k)).length, color: i === 0 ? t.color : lvlColor(t.color, 2)}); }
+  h += '<section class="block"><h2>Sesiones por mes</h2>' + barChart(items, {label: "Sesiones de " + t.name + " por mes"}) + "</section>";
+
+  // Reparto por intensidad y tipo
+  const dist = (title, rows) => { const mx = Math.max(1, ...rows.map(r => r.c)); return '<h2 style="margin-top:4px">' + title + '</h2><div class="legend" style="margin-bottom:16px">' + rows.map(r => '<div class="r"><i style="background:' + r.col + '"></i><span>' + esc(r.n) + '</span><b class="num" style="font-size:18px">' + r.c + '</b><span></span><div class="bar"><span style="width:' + (r.c / mx * 100) + "%;background:" + r.col + '"></span></div></div>').join("") + "</div>"; };
+  const lv = LEVELS.map((n, i) => ({n, c: ss.filter(s => s.L.lvl === i + 1).length, col: lvlColor(t.color, i + 1)})).filter(r => r.c);
+  const kd = t.kinds.map(x => ({n: x.name, c: ss.filter(s => s.L.kind === x.id).length, col: t.color})).filter(r => r.c);
+  if (lv.length || kd.length) h += '<section class="block">' + (lv.length ? dist("Intensidad", lv) : "") + (kd.length ? dist("Tipo de sesión", kd) : "") + "</section>";
+
+  // Historial
+  h += '<section class="block"><h2>Historial</h2><ul class="hist">' + ss.slice(-40).reverse().map(s => '<li><button data-act="day" data-k="' + s.k + '"><span class="d">' + dayShort(s.k) + '</span><span class="s">' + esc(sessText(t, s.L)) + "</span></button></li>").join("") + "</ul></section>";
+  return h + syncNote();
+}
+function sportEditor(t){
+  const draft = {color: t.color, kinds: (t.kinds || []).map(x => Object.assign({}, x))};
+  openSheet('<h3>Editar deporte</h3><label class="field"><span>Nombre</span><input class="inp" id="nm" maxlength="24" autocomplete="off" value="' + esc(t.name) + '"></label>' +
+    '<div class="field"><span>Color</span><div class="cols" id="cols"></div></div>' +
+    '<div class="field"><span>Tipos de sesión</span><div id="kinds"></div><div class="addrow" style="margin:10px 0 0"><input class="inp" id="nk" placeholder="Nuevo tipo, p. ej. Torneo" maxlength="20" autocomplete="off"><button class="btn ghost" id="addk">Añadir</button></div>' +
+    '<p class="small muted" style="margin:6px 0 0">Activa «Con resultado» en los tipos que sean partidos para apuntar si ganaste y el marcador.</p></div>' +
+    '<div class="err" id="er"></div><button class="btn" id="ok">Guardar cambios</button><button class="btn danger" id="del">Eliminar deporte</button>', sh => {
+    const draw = () => {
+      $("#cols", sh).innerHTML = PALETTE.map(c => '<button class="swb" data-c="' + c + '" aria-pressed="' + (draft.color === c) + '" style="background:' + c + '" aria-label="Color ' + c + '"></button>').join("");
+      $("#kinds", sh).innerHTML = draft.kinds.length ? draft.kinds.map((x, i) => '<div class="krow"><span>' + esc(x.name) + '</span><button class="chipbtn" data-km="' + i + '" aria-pressed="' + !!x.match + '">Con resultado</button><button class="x" data-kr="' + i + '" aria-label="Quitar ' + esc(x.name) + '">' + ICON.x + "</button></div>").join("") : '<p class="small muted" style="margin:0">Sin tipos. Añade, por ejemplo, Clase o Partido.</p>';
+    };
+    draw();
+    sh.addEventListener("click", e => {
+      const c = e.target.closest("[data-c]"), km = e.target.closest("[data-km]"), kr = e.target.closest("[data-kr]");
+      if (c) draft.color = c.dataset.c;
+      else if (km) draft.kinds[+km.dataset.km].match = !draft.kinds[+km.dataset.km].match;
+      else if (kr) draft.kinds.splice(+kr.dataset.kr, 1);
+      else return;
+      draw();
+    });
+    const addK = () => { const v = $("#nk", sh).value.trim(); if (!v) return; draft.kinds.push({id: newId(), name: v, match: /partido|torneo|match/i.test(v)}); $("#nk", sh).value = ""; draw(); };
+    $("#addk", sh).onclick = addK; $("#nk", sh).onkeydown = e => { if (e.key === "Enter") addK(); };
+    $("#ok", sh).onclick = () => {
+      const v = $("#nm", sh).value.trim();
+      if (!v) { $("#er", sh).textContent = "Escribe un nombre."; return; }
+      if (S.sportTypes.some(x => x.id !== t.id && x.name.toLowerCase() === v.toLowerCase())) { $("#er", sh).textContent = "Ya tienes un deporte con ese nombre."; return; }
+      t.name = v; t.color = draft.color; t.kinds = draft.kinds; touch("meta"); closeSheet(); render();
+    };
+    $("#del", sh).onclick = () => {
+      if (!confirm("¿Eliminar «" + t.name + "»? Se quitará de todos los días en que lo marcaste, con sus detalles.")) return;
+      S.sportTypes = S.sportTypes.filter(x => x.id !== t.id);
+      Object.keys(S.activity).forEach(k => { S.activity[k] = S.activity[k].filter(id => id !== t.id); if (!S.activity[k].length) delete S.activity[k]; });
+      Object.keys(S.log).forEach(k => { delete S.log[k][t.id]; if (!Object.keys(S.log[k]).length) delete S.log[k]; });
+      S.widgets = S.widgets.filter(w => w !== "sport:" + t.id);
+      ui.sportId = null; touch("meta", "registro"); closeSheet(); render();
+    };
+  });
+}
+
+/* ---------- copia de seguridad ---------- */
+async function exportData(){
+  const name = "on-going-copia-" + todayKey() + ".json", data = JSON.stringify({app: "on-going", v: 1, data: S});
+  if (window.AndroidBridge) { window.AndroidBridge.saveFile(name, data); return; }
+  if (!PWA && window.claude && typeof window.claude.use === "function") {
+    try { const d = await window.claude.use("downloads"); if (d) { await d.save({filename: name, data}); return; } }
+    catch (e) { if (e && e.code === "declined") return; }
+  }
+  const file = new File([data], name, {type: "application/json"});
+  if (navigator.canShare && navigator.canShare({files: [file]})) {
+    try { await navigator.share({files: [file], title: "Copia de On Going"}); return; } catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+async function importData(file){
+  try {
+    const obj = JSON.parse(await file.text()), d = obj && obj.data ? obj.data : obj;
+    if (!d || !Array.isArray(d.exercises) || typeof d.activity !== "object") throw new Error("formato");
+    if (!confirm("Se sustituirán los datos actuales por los de la copia. ¿Continuar?")) return;
+    S = Object.assign(blank(), d); fixup();
+    touch("meta", "comidas", "registro", ...S.exercises.map(e => "ej_" + e.id));
+    render(); alert("Copia importada.");
+  } catch (e) { alert("Ese archivo no es una copia de On Going."); }
+}
+
+/* ---------- temas e icono ---------- */
+const SKINS = {
+  ongoing: {name: "On Going", desc: "Deportivo y limpio. Sigue el modo claro u oscuro del móvil.", bg: ["#16898F", "#0A4B4F"], ring: "#F1F3F0", dot: "#F2C64A", sw: ["#F1F3F0", "#0F6E73", "#E2AC14", "#12262B"], font: '"Barlow Condensed",sans-serif', w: 700},
+  pilates: {name: "Pilates", desc: "Rosa palo y gris clarito, con letra serif elegante.", bg: ["#F3DCDB", "#D6A9AC"], ring: "#FFFFFF", dot: "#8C8486", sw: ["#F5F0EF", "#EBD3D2", "#A9777B", "#B9B3B4"], font: '"Cormorant Garamond",serif', w: 500},
+  club: {name: "Club", desc: "Azul noche y latón. Sobrio y elegante.", bg: ["#26303E", "#0E1218"], ring: "#C49B5C", dot: "#EEE7DA", sw: ["#11151B", "#252D38", "#C49B5C", "#EEE7DA"], font: '"Playfair Display",serif', w: 600}
+};
+let icN = 0;
+function iconSVG(k){
+  const s = SKINS[k] || SKINS.ongoing, id = "ig" + (icN++);
+  // Anillo abierto (sigue en marcha) con un punto que va por delante
+  return '<svg class="ic" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + s.bg[0] + '"/><stop offset="1" stop-color="' + s.bg[1] + '"/></linearGradient></defs>' +
+    '<rect width="1024" height="1024" rx="230" fill="url(#' + id + ')"/>' +
+    '<circle cx="512" cy="530" r="290" fill="none" stroke="' + s.ring + '" stroke-width="118" stroke-linecap="round" stroke-dasharray="1348 1822" transform="rotate(-40 512 530)"/>' +
+    '<circle cx="537" cy="241" r="66" fill="' + s.dot + '"/></svg>';
+}
+function applyTheme(){
+  const p = S.prefs || {skin: "ongoing", appearance: "auto"}, r = document.documentElement;
+  r.dataset.skin = p.skin;
+  if (p.skin === "pilates") r.dataset.theme = "light";
+  else if (p.skin === "club") r.dataset.theme = "dark";
+  else if (p.appearance === "light" || p.appearance === "dark") r.dataset.theme = p.appearance;
+  else if (window.AndroidBridge && window.AndroidBridge.isDark) r.dataset.theme = window.AndroidBridge.isDark() ? "dark" : "light";
+  else delete r.dataset.theme;
+  // En la app de Android, las barras del sistema toman el color del tema
+  if (window.AndroidBridge && window.AndroidBridge.setBars) { const cs = getComputedStyle(r); window.AndroidBridge.setBars(cs.getPropertyValue("--bg").trim(), cs.colorScheme !== "dark"); }
+}
+window.__sysTheme = () => render();
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+/* ---------- widgets ---------- */
+const WIDGETS = {
+  "food-today": {size: "s", name: "Comidas de hoy", tab: "food"},
+  "act-month": {size: "s", name: "Días de deporte del mes", tab: "act"},
+  "act-week": {size: "s", name: "Deporte esta semana", tab: "act"},
+  "act-year": {size: "m", name: "Días de deporte por mes", tab: "act"},
+  "food-month": {size: "m", name: "Comidas del mes", tab: "food"}
+};
+const wDef = w => w.startsWith("ex:") ? {size: "m", tab: "ej", ex: w.slice(3)} : w.startsWith("sport:") ? {size: "m", tab: "act", sport: w.slice(6)} : WIDGETS[w];
+function widgetBody(w){
+  const tk = todayKey(), y = now.getFullYear(), m = now.getMonth(), mk = monthKey(y, m);
+  if (w === "food-today") {
+    const a = dayAvg(tk), d = S.meals[tk] || {};
+    const n = MEALS.filter(([id]) => d[id] && typeof d[id].s === "number").length;
+    return '<div class="wt">Comidas hoy</div>' + ring(a) + '<div class="wsub" style="text-align:center">' + (n ? n + (n === 1 ? " valorada" : " valoradas") : "Sin valorar") + "</div>";
+  }
+  if (w === "act-month") {
+    const c = Object.keys(S.activity).filter(k => k.startsWith(mk) && S.activity[k].length).length;
+    return '<div class="wt">Deporte</div><div class="wbig">' + c + '</div><div class="wsub">' + (c === 1 ? "día" : "días") + " en " + MONTHS[m] + "</div>";
+  }
+  if (w === "act-week") {
+    const d0 = new Date(); d0.setDate(d0.getDate() - ((d0.getDay() + 6) % 7));
+    let c = 0, cells = "";
+    ["L","M","X","J","V","S","D"].forEach((l, i) => {
+      const d = new Date(d0); d.setDate(d0.getDate() + i); const k = keyOf(d), on = (S.activity[k] || []).length > 0; if (on) c++;
+      cells += "<span>" + l + '<i class="' + (on ? "on" : "") + (k === tk ? " today" : "") + '"></i></span>';
+    });
+    return '<div class="wt">Esta semana</div><div class="wbig" style="font-size:44px;margin-top:6px">' + c + '<span class="wsub" style="font-family:var(--body);font-size:14px;margin-left:6px">' + (c === 1 ? "día" : "días") + '</span></div><div class="week">' + cells + "</div>";
+  }
+  if (w === "act-year") {
+    const items = [];
+    for (let i = 5; i >= 0; i--) { const d = new Date(y, m - i, 1), k = monthKey(d.getFullYear(), d.getMonth());
+      items.push({label: MSHORT[d.getMonth()], v: Object.keys(S.activity).filter(x => x.startsWith(k) && S.activity[x].length).length, hl: i === 0}); }
+    return '<div class="wt">Días de deporte por mes</div>' + barChart(items, {h: 120, label: "Días de deporte en los últimos 6 meses"});
+  }
+  if (w === "food-month") {
+    const n = daysInMonth(y, m), pts = [];
+    for (let i = 1; i <= n; i++) { const a = dayAvg(keyOf(new Date(y, m, i))); if (a !== null) pts.push({x: i, y: a}); }
+    const avg = pts.length ? pts.reduce((a, b) => a + b.y, 0) / pts.length : null;
+    return '<div class="wt">Comidas de ' + MONTHS[m] + (avg !== null ? '<b style="color:' + scoreColor(avg) + '">' + Math.round(avg) + "%</b>" : "") + "</div>" +
+      (pts.length ? lineChart(pts, {mini: true, h: 120, xMin: 1, xMax: n, yFixed: [0, 100, 50], color: "var(--muted)", dotColor: scoreColor, label: "Media diaria de comidas del mes"}) : '<div class="none">Valora tus comidas para ver la curva.</div>');
+  }
+  if (w.startsWith("sport:")) {
+    const t = S.sportTypes.find(x => x.id === w.slice(6)); if (!t) return null;
+    const ss = sessionsOf(t.id), items = [];
+    for (let i = 5; i >= 0; i--) { const d = new Date(y, m - i, 1), k = monthKey(d.getFullYear(), d.getMonth());
+      items.push({label: MSHORT[d.getMonth()], v: ss.filter(s => s.k.startsWith(k)).length, color: i === 0 ? t.color : lvlColor(t.color, 2)}); }
+    const mIds = t.kinds.filter(x => x.match).map(x => x.id), mt = ss.filter(s => mIds.includes(s.L.kind) && s.L.res);
+    const right = mt.length ? Math.round(mt.filter(s => s.L.res === "w").length / mt.length * 100) + "% victorias" : items[5].v + " este mes";
+    return '<div class="wt">' + esc(t.name) + "<b>" + right + "</b></div>" + (ss.length ? barChart(items, {h: 120, label: "Sesiones de " + t.name + " por mes"}) : '<div class="none">Sin sesiones todavía.</div>');
+  }
+  if (w.startsWith("ex:")) {
+    const ex = S.exercises.find(e => e.id === w.slice(3)); if (!ex) return null;
+    const es = entriesOf(ex.id);
+    return '<div class="wt">' + esc(ex.name) + (es.length ? "<b>" + fmt(Math.max(...es.map(mMax))) + " kg</b>" : "") + "</div>" +
+      (es.length > 1 ? lineChart(es.map(e => ({x: parseKey(e.date).getTime(), y: mMax(e)})), {mini: true, h: 120, label: "Evolución de " + ex.name}) : '<div class="none">' + (es.length ? "Con otra sesión verás la evolución." : "Sin sesiones todavía.") + "</div>");
+  }
+  return null;
+}
+function viewHome(){
+  const tk = todayKey();
+  let h = '<header class="top"><div class="brand">' + iconSVG(S.prefs.skin) + '<div><h1 class="title">On Going</h1><div class="small muted">' + cap(dayLong(tk)) + "</div></div></div>" +
+    '<button class="link" data-act="edit-w">' + (ui.editW ? "Hecho" : "Editar") + "</button></header>";
+  const ws = S.widgets.map((w, i) => { const b = widgetBody(w); if (b === null) return ""; const d = wDef(w);
+    return '<div class="w ' + d.size + '" role="button" tabindex="0" data-act="w-open" data-i="' + i + '">' + (ui.editW ? '<button class="rm" data-act="rm-w" data-i="' + i + '" aria-label="Quitar widget">' + ICON.x + "</button>" : "") + b + "</div>"; }).join("");
+  h += ws ? '<div class="wgrid' + (ui.editW ? " editing" : "") + '">' + ws + "</div>" : '<div class="block empty"><b>Sin widgets</b>Añade gráficas para ver tu evolución nada más abrir.</div>';
+  if (ui.editW || !ws) h += '<button class="btn ghost" style="margin-top:16px" data-act="add-w">Añadir widget</button>';
+  return h + syncNote();
+}
+function gallerySheet(){
+  const opts = Object.entries(WIDGETS).filter(([k]) => !S.widgets.includes(k)).map(([k, d]) => ({k, name: d.name, size: d.size}))
+    .concat(S.sportTypes.filter(t => !S.widgets.includes("sport:" + t.id)).map(t => ({k: "sport:" + t.id, name: t.name + ": sesiones y resultados", size: "m"})))
+    .concat(S.exercises.filter(e => !S.widgets.includes("ex:" + e.id)).map(e => ({k: "ex:" + e.id, name: "Evolución de " + e.name, size: "m"})));
+  openSheet('<h3>Añadir widget</h3>' + (opts.length ? '<ul class="gal">' + opts.map(o => '<li><button data-act="pick-w" data-k="' + esc(o.k) + '"><b>' + esc(o.name) + "</b><span>" + (o.size === "s" ? "Pequeño" : "Mediano") + "</span></button></li>").join("") + "</ul>" : '<p class="muted">Ya tienes todos los widgets. Crea ejercicios para añadir su gráfica.</p>') + '<button class="btn ghost" data-act="close">Cancelar</button>');
+}
+function viewSettings(){
+  const p = S.prefs;
+  let h = '<header class="top"><h1 class="title">Ajustes</h1></header>';
+  h += '<section class="block"><h2>Tema</h2><div class="themes">' + Object.entries(SKINS).map(([k, t]) =>
+    '<button class="theme" data-act="skin" data-k="' + k + '" aria-pressed="' + (p.skin === k) + '">' + iconSVG(k) +
+    '<span><span class="nm" style="font-family:' + esc(t.font) + ";font-weight:" + t.w + '">' + t.name + '</span><span class="ds">' + t.desc + '</span><span class="sw">' + t.sw.map(c => '<i style="background:' + c + '"></i>').join("") + '</span></span><span class="ck">' + (p.skin === k ? CHECK : "") + "</span></button>").join("") + "</div></section>";
+  if (p.skin === "ongoing") h += '<section class="block"><h2>Apariencia</h2><div class="seg" role="group" aria-label="Apariencia" style="margin:0">' +
+    [["auto", "Automática"], ["light", "Clara"], ["dark", "Oscura"]].map(([k, l]) => '<button data-act="appear" data-k="' + k + '" aria-pressed="' + (p.appearance === k) + '">' + l + "</button>").join("") + "</div></section>";
+  h += '<section class="block"><h2>Icono de la app</h2><div class="iconrow">' + iconSVG(p.skin) + '<p class="small muted" style="margin:0">Un anillo que nunca se cierra y un punto que va por delante: seguir en marcha. El icono cambia con el tema.</p></div></section>';
+  h += '<section class="block"><h2>Widgets</h2><p class="small muted" style="margin:0 0 12px">Elige qué gráficas ves en Inicio. En la app de iPhone estos mismos widgets se podrán poner en la pantalla de inicio del móvil.</p><button class="btn ghost" data-act="go-widgets">Organizar widgets</button></section>';
+  h += '<section class="block"><h2>Copia de seguridad</h2><p class="small muted" style="margin:0 0 12px">' + (PWA ? "Tus datos se guardan solo en este móvil. Exporta una copia de vez en cuando y guárdala en Archivos o iCloud Drive." : "Exporta tus datos para pasarlos a la app del iPhone, o importa una copia.") + '</p><div class="row"><button class="btn ghost" data-act="export">Exportar copia</button><button class="btn ghost" data-act="import">Importar copia</button></div><input type="file" id="impf" accept="application/json,.json" hidden></section>';
+  return h + syncNote();
+}
+
+function render(){
+  const app = $("#app");
+  applyTheme();
+  app.innerHTML = ui.tab === "home" ? viewHome() : ui.tab === "set" ? viewSettings() : ui.tab === "ej" ? (ui.exId ? viewExercise() : viewExercises()) : ui.tab === "act" ? (ui.sportId ? viewSport() : viewActivity()) : viewFood();
+  document.querySelectorAll(".tabs button").forEach(b => b.toggleAttribute("aria-current", false) || (b.dataset.tab === ui.tab && b.setAttribute("aria-current", "page")));
+}
+
+/* ---------- hojas ---------- */
+function openSheet(html, mount){
+  const layer = $("#layer");
+  layer.innerHTML = '<div class="backdrop" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>' + html + "</div>";
+  requestAnimationFrame(() => { $(".backdrop", layer).classList.add("on"); $(".sheet", layer).classList.add("on"); });
+  if (mount) mount($(".sheet", layer));
+}
+function closeSheet(){
+  const layer = $("#layer"), s = $(".sheet", layer), b = $(".backdrop", layer);
+  if (!s) return;
+  s.classList.remove("on"); b.classList.remove("on");
+  setTimeout(() => { layer.innerHTML = ""; }, 220);
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); if ((e.key === "Enter" || e.key === " ") && e.target.matches(".w[data-act]")) { e.preventDefault(); e.target.click(); } });
+
+function nameSheet(title, initial, cta, onSave){
+  openSheet('<h3>' + title + '</h3><label class="field"><span>Nombre</span><input class="inp" id="nm" maxlength="40" autocomplete="off" value="' + esc(initial) + '"></label><div class="err" id="er"></div><button class="btn" id="ok">' + cta + "</button>", sh => {
+    const inp = $("#nm", sh); setTimeout(() => inp.focus(), 250);
+    const go = () => { const v = inp.value.trim(); if (!v) { $("#er", sh).textContent = "Escribe un nombre."; return; } if (onSave(v, sh) !== false) closeSheet(); };
+    $("#ok", sh).onclick = go; inp.onkeydown = e => { if (e.key === "Enter") go(); };
+  });
+}
+
+function entrySheet(entry){
+  const ex = S.exercises.find(e => e.id === ui.exId);
+  let sets = entry ? entry.sets.map(s => ({kg: String(s.kg).replace(".", ","), reps: String(s.reps)})) : [{kg: "", reps: ""}];
+  let mode = entry && entry.sets.length > 1 ? "series" : "simple";
+  // Sugerencia: copiar la última sesión
+  if (!entry) { const last = entriesOf(ex.id).slice(-1)[0]; if (last) { sets = last.sets.map(s => ({kg: String(s.kg).replace(".", ","), reps: String(s.reps)})); mode = last.sets.length > 1 ? "series" : "simple"; } }
+  openSheet('<h3>' + (entry ? "Editar sesión" : esc(ex.name)) + '</h3><label class="field"><span>Día</span><input class="inp" type="date" id="dt" value="' + (entry ? entry.date : todayKey()) + '" max="' + todayKey() + '"></label>' +
+    '<div class="seg" role="group" aria-label="Forma de registrar"><button data-m="simple">Un valor</button><button data-m="series">Por series</button></div><div class="sets" id="sets"></div><div id="addwrap"></div><div class="err" id="er"></div>' +
+    '<button class="btn" id="ok">Guardar sesión</button>' + (entry ? '<button class="btn danger" id="del">Eliminar sesión</button>' : ""), sh => {
+    const box = $("#sets", sh);
+    const draw = () => {
+      sh.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === mode));
+      const list = mode === "simple" ? sets.slice(0, 1) : sets;
+      box.innerHTML = list.map((s, i) => '<div class="set' + (mode === "simple" ? " single" : "") + '">' + (mode === "series" ? '<span class="n">Serie ' + (i + 1) + "</span>" : "") +
+        '<label class="unit"><input class="inp" inputmode="decimal" placeholder="0" data-i="' + i + '" data-f="kg" value="' + esc(s.kg) + '" aria-label="Kilos"><em>kg</em></label>' +
+        '<label class="unit"><input class="inp" inputmode="numeric" placeholder="0" data-i="' + i + '" data-f="reps" value="' + esc(s.reps) + '" aria-label="Repeticiones"><em>reps</em></label>' +
+        (mode === "series" ? (sets.length > 1 ? '<button class="x" data-rm="' + i + '" aria-label="Quitar serie">' + ICON.x + "</button>" : "<span></span>") : "") + "</div>").join("");
+      $("#addwrap", sh).innerHTML = mode === "series" ? '<button class="btn ghost" id="add" style="margin-bottom:6px">' + ICON.plus.replace("<svg", '<svg width="18" height="18"') + "Añadir serie</button>" : "";
+      const add = $("#add", sh);
+      if (add) add.onclick = () => { const l = sets[sets.length - 1]; sets.push({kg: l.kg, reps: l.reps}); draw(); const ins = box.querySelectorAll('input[data-f="kg"]'); ins[ins.length - 1].focus(); };
+    };
+    box.addEventListener("input", e => { const t = e.target; if (t.dataset.i) sets[+t.dataset.i][t.dataset.f] = t.value; });
+    box.addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b) { sets.splice(+b.dataset.rm, 1); draw(); } });
+    sh.querySelectorAll(".seg button").forEach(b => b.onclick = () => { mode = b.dataset.m; if (mode === "simple") sets = sets.slice(0, 1); draw(); });
+    draw();
+    $("#ok", sh).onclick = () => {
+      const date = $("#dt", sh).value;
+      if (!date) { $("#er", sh).textContent = "Elige el día."; return; }
+      const use = (mode === "simple" ? sets.slice(0, 1) : sets).map(s => ({kg: parseNum(s.kg), reps: Math.round(parseNum(s.reps))}));
+      if (use.some(s => !(s.kg >= 0) || !(s.reps > 0))) { $("#er", sh).textContent = "Completa kilos y repeticiones en cada serie (usa 0 kg si es con tu peso)."; return; }
+      const list = S.entries[ex.id] = S.entries[ex.id] || [];
+      if (entry) { const e = list.find(x => x.id === entry.id); e.date = date; e.sets = use; }
+      else list.push({id: newId(), date, sets: use});
+      touch("ej_" + ex.id); closeSheet(); render();
+    };
+    if (entry) $("#del", sh).onclick = () => {
+      if (!confirm("¿Eliminar la sesión del " + dayShort(entry.date) + "?")) return;
+      S.entries[ex.id] = (S.entries[ex.id] || []).filter(x => x.id !== entry.id);
+      touch("ej_" + ex.id); closeSheet(); render();
+    };
+  });
+}
+
+function daySheet(k){
+  const det = t => {
+    const L = (S.log[k] && S.log[k][t.id]) || {}, kinds = t.kinds || [], kind = kinds.find(x => x.id === L.kind);
+    let h = '<div class="det" style="--c:' + t.color + '" data-sp="' + t.id + '"><div class="dh"><i style="background:' + t.color + '"></i>' + esc(t.name) + "</div>";
+    if (kinds.length) h += '<div class="seg" role="group" aria-label="Tipo de sesión">' + kinds.map(x => '<button data-f="kind" data-v="' + x.id + '" aria-pressed="' + (L.kind === x.id) + '">' + esc(x.name) + "</button>").join("") + "</div>";
+    if (kind && kind.match) h += '<div class="seg" role="group" aria-label="Resultado"><button data-f="res" data-v="w" aria-pressed="' + (L.res === "w") + '">Ganado</button><button data-f="res" data-v="l" aria-pressed="' + (L.res === "l") + '">Perdido</button></div><input class="inp" data-f="score" placeholder="Marcador, p. ej. 6-4 3-6 7-5" maxlength="40" autocomplete="off" value="' + esc(L.score || "") + '" style="margin-bottom:10px">';
+    h += '<label class="unit" style="display:block;margin-bottom:10px"><input class="inp" inputmode="numeric" data-f="min" placeholder="Duración" value="' + (L.min || "") + '" aria-label="Minutos"><em>min</em></label>';
+    h += '<div class="seg" role="group" aria-label="Intensidad" style="margin:0">' + LEVELS.map((n, i) => '<button data-f="lvl" data-v="' + (i + 1) + '" aria-pressed="' + (L.lvl === i + 1) + '">' + n + "</button>").join("") + "</div>";
+    return h + "</div>";
+  };
+  const setL = (id, f, v) => {
+    const day = S.log[k] = S.log[k] || {}, L = day[id] = day[id] || {};
+    if (v === null || v === "" || (typeof v === "number" && !isFinite(v))) delete L[f]; else L[f] = v;
+    if (!Object.keys(L).length) delete day[id];
+    if (!Object.keys(day).length) delete S.log[k];
+    touch("registro");
+  };
+  const draw = sh => {
+    const on = S.activity[k] || [];
+    $("#chips", sh).innerHTML = S.sportTypes.map(t => '<button class="chip" style="--c:' + t.color + '" data-sp="' + t.id + '" aria-pressed="' + on.includes(t.id) + '"><i style="background:' + t.color + '"></i>' + esc(t.name) + "</button>").join("");
+    $("#dets", sh).innerHTML = on.map(id => S.sportTypes.find(t => t.id === id)).filter(Boolean).map(det).join("");
+  };
+  openSheet('<h3>' + cap(dayLong(k)) + '</h3><p class="small muted" style="margin:-8px 0 14px">Marca lo que hiciste. Puedes elegir varios.</p><div class="chips" id="chips"></div><div id="dets"></div>' +
+    '<div class="addrow"><input class="inp" id="nsp" placeholder="Otro deporte" maxlength="24" autocomplete="off"><button class="btn ghost" id="addsp">Añadir</button></div><button class="btn" data-act="close">Listo</button>', sh => {
+    draw(sh);
+    $("#chips", sh).onclick = e => {
+      const b = e.target.closest("[data-sp]"); if (!b) return;
+      const cur = new Set(S.activity[k] || []);
+      if (cur.has(b.dataset.sp)) { cur.delete(b.dataset.sp); if (S.log[k] && S.log[k][b.dataset.sp]) { delete S.log[k][b.dataset.sp]; if (!Object.keys(S.log[k]).length) delete S.log[k]; touch("registro"); } }
+      else cur.add(b.dataset.sp);
+      if (cur.size) S.activity[k] = [...cur]; else delete S.activity[k];
+      touch("meta"); draw(sh); render();
+    };
+    const dets = $("#dets", sh);
+    dets.addEventListener("click", e => {
+      const b = e.target.closest("button[data-f]"); if (!b) return;
+      const sp = b.closest(".det").dataset.sp, f = b.dataset.f, v = f === "lvl" ? +b.dataset.v : b.dataset.v;
+      const cur = ((S.log[k] || {})[sp] || {})[f];
+      setL(sp, f, cur === v ? null : v); draw(sh); render();
+    });
+    dets.addEventListener("input", e => {
+      const i = e.target.closest("input[data-f]"); if (!i) return;
+      const sp = i.closest(".det").dataset.sp;
+      if (i.dataset.f === "min") setL(sp, "min", parseInt(i.value, 10)); else setL(sp, "score", i.value.trim());
+    });
+    dets.addEventListener("change", () => render());
+    const add = () => {
+      const v = $("#nsp", sh).value.trim(); if (!v) return;
+      let t = S.sportTypes.find(x => x.name.toLowerCase() === v.toLowerCase());
+      if (!t) { t = {id: newId(), name: v, color: PALETTE[S.sportTypes.length % PALETTE.length], kinds: []}; S.sportTypes.push(t); }
+      S.activity[k] = [...new Set([...(S.activity[k] || []), t.id])];
+      $("#nsp", sh).value = ""; touch("meta"); draw(sh); render();
+    };
+    $("#addsp", sh).onclick = add; $("#nsp", sh).onkeydown = e => { if (e.key === "Enter") add(); };
+  });
+}
+
+/* ---------- comidas: cambios ---------- */
+function setMeal(id, val){
+  const k = ui.foodDay;
+  const d = S.meals[k] = S.meals[k] || {};
+  if (val === null) delete d[id]; else d[id] = val;
+  if (!Object.keys(d).length) delete S.meals[k];
+  touch("comidas");
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", e => {
+  const tab = e.target.closest(".tabs button");
+  if (tab) { if (tab.dataset.tab === ui.tab) { ui.exId = null; ui.sportId = null; } if (tab.dataset.tab !== "home") ui.editW = false; ui.tab = tab.dataset.tab; render(); window.scrollTo(0, 0); return; }
+  const a = e.target.closest("[data-act]"); if (!a) return;
+  const act = a.dataset.act;
+  switch (act) {
+    case "close": closeSheet(); break;
+    case "edit-w": ui.editW = !ui.editW; render(); break;
+    case "add-w": gallerySheet(); break;
+    case "pick-w": S.widgets.push(a.dataset.k); touch("meta"); closeSheet(); render(); break;
+    case "rm-w": S.widgets.splice(+a.dataset.i, 1); touch("meta"); render(); break;
+    case "w-open": {
+      if (ui.editW) break;
+      const d = wDef(S.widgets[+a.dataset.i]); if (!d) break;
+      ui.tab = d.tab; ui.exId = d.ex || null; ui.sportId = d.sport || null; render(); window.scrollTo(0, 0); break;
+    }
+    case "skin": S.prefs.skin = a.dataset.k; touch("meta"); render(); break;
+    case "appear": S.prefs.appearance = a.dataset.k; touch("meta"); render(); break;
+    case "go-widgets": ui.tab = "home"; ui.editW = true; render(); window.scrollTo(0, 0); break;
+    case "new-ex": nameSheet("Nuevo ejercicio", "", "Crear ejercicio", (v, sh) => {
+      if (S.exercises.some(x => x.name.toLowerCase() === v.toLowerCase())) { $("#er", sh).textContent = "Ya tienes un ejercicio con ese nombre."; return false; }
+      const ex = {id: newId(), name: v, created: todayKey()}; S.exercises.push(ex); S.entries[ex.id] = [];
+      touch("meta", "ej_" + ex.id); ui.exId = ex.id; render(); window.scrollTo(0, 0); setTimeout(() => entrySheet(null), 260);
+    }); break;
+    case "open-ex": ui.exId = a.dataset.id; render(); window.scrollTo(0, 0); break;
+    case "back": ui.exId = null; render(); break;
+    case "metric": ui.metric = a.dataset.k; render(); break;
+    case "new-entry": entrySheet(null); break;
+    case "edit-entry": entrySheet((S.entries[ui.exId] || []).find(x => x.id === a.dataset.id)); break;
+    case "rename-ex": { const ex = S.exercises.find(x => x.id === ui.exId); nameSheet("Cambiar nombre", ex.name, "Guardar nombre", v => { ex.name = v; touch("meta"); render(); }); break; }
+    case "del-ex": {
+      const ex = S.exercises.find(x => x.id === ui.exId);
+      if (!confirm("¿Eliminar «" + ex.name + "» y todas sus sesiones?")) break;
+      S.exercises = S.exercises.filter(x => x.id !== ex.id); delete S.entries[ex.id];
+      touch("meta"); dropDoc("ej_" + ex.id); ui.exId = null; render(); break;
+    }
+    case "cal-prev": case "cal-next": { const d = new Date(ui.calY, ui.calM + (act === "cal-next" ? 1 : -1), 1); ui.calY = d.getFullYear(); ui.calM = d.getMonth(); render(); break; }
+    case "day": daySheet(a.dataset.k); break;
+    case "open-sport": ui.sportId = a.dataset.id; render(); window.scrollTo(0, 0); break;
+    case "back-act": ui.sportId = null; render(); break;
+    case "edit-sport": { const t = S.sportTypes.find(x => x.id === ui.sportId); if (t) sportEditor(t); break; }
+    case "export": exportData(); break;
+    case "import": { const f = $("#impf"); if (f) { f.value = ""; f.click(); } break; }
+    case "new-sport": nameSheet("Nuevo deporte", "", "Añadir deporte", (v, sh) => {
+      if (S.sportTypes.some(x => x.name.toLowerCase() === v.toLowerCase())) { $("#er", sh).textContent = "Ese deporte ya está en la lista."; return false; }
+      S.sportTypes.push({id: newId(), name: v, color: PALETTE[S.sportTypes.length % PALETTE.length], kinds: []}); touch("meta"); render();
+    }); break;
+    case "del-sport": {
+      const t = S.sportTypes.find(x => x.id === a.dataset.id);
+      if (!confirm("¿Eliminar «" + t.name + "»? Se quitará de todos los días en que lo marcaste.")) break;
+      S.sportTypes = S.sportTypes.filter(x => x.id !== t.id);
+      Object.keys(S.activity).forEach(k => { S.activity[k] = S.activity[k].filter(id => id !== t.id); if (!S.activity[k].length) delete S.activity[k]; });
+      touch("meta"); render(); break;
+    }
+    case "food-prev": case "food-next": {
+      const d = parseKey(ui.foodDay); d.setDate(d.getDate() + (act === "food-next" ? 1 : -1));
+      const k = keyOf(d); if (k > todayKey()) break;
+      ui.foodDay = k; ui.foodY = d.getFullYear(); ui.foodM = d.getMonth(); render(); break;
+    }
+    case "food-today": { ui.foodDay = todayKey(); ui.foodY = now.getFullYear(); ui.foodM = now.getMonth(); render(); break; }
+    case "fm-prev": case "fm-next": { const d = new Date(ui.foodY, ui.foodM + (act === "fm-next" ? 1 : -1), 1); ui.foodY = d.getFullYear(); ui.foodM = d.getMonth(); render(); break; }
+    case "food-day": { if (a.dataset.k > todayKey()) break; ui.foodDay = a.dataset.k; const d = parseKey(a.dataset.k); ui.foodY = d.getFullYear(); ui.foodM = d.getMonth(); render(); window.scrollTo({top: 0, behavior: "smooth"}); break; }
+    case "meal-skip": { const cur = (S.meals[ui.foodDay] || {})[a.dataset.meal]; setMeal(a.dataset.meal, cur && cur.skip ? null : {skip: true}); render(); break; }
+    case "meal-clear": setMeal(a.dataset.meal, null); render(); break;
+  }
+});
+// Barra de saludable: actualiza en vivo y guarda al soltar
+document.addEventListener("input", e => {
+  const r = e.target.closest('[data-act="meal-range"]'); if (!r) return;
+  const card = r.closest(".meal"), v = +r.value, p = $(".pct", card);
+  card.classList.remove("unset"); p.textContent = v + "%"; p.style.color = scoreColor(v);
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "impf" && e.target.files[0]) { importData(e.target.files[0]); return; }
+  const r = e.target.closest('[data-act="meal-range"]'); if (!r) return;
+  const y = window.scrollY; setMeal(r.dataset.meal, {s: +r.value}); render(); window.scrollTo(0, y);
+});
+
+// Botón atrás de Android: cierra hojas y vuelve atrás antes de salir
+window.__onBack = () => {
+  if ($("#layer .sheet")) { closeSheet(); return true; }
+  if (ui.exId || ui.sportId) { ui.exId = null; ui.sportId = null; render(); return true; }
+  if (ui.editW) { ui.editW = false; render(); return true; }
+  if (ui.tab !== "home") { ui.tab = "home"; render(); window.scrollTo(0, 0); return true; }
+  return false;
+};
+
+render();
+initCloud();
+})();
+</script>
+<script>if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+</body>
+</html>
